@@ -67,7 +67,7 @@ services:
   networks:
    - zbx_net
   ports:
-   - 8080:8080
+   - 8090:8080
    - 8443:8443
   volumes:
    - /etc/localtime:/etc/localtime:ro
