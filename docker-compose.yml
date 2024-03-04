@@ -61,7 +61,7 @@ services:
    - mysql-server
 
  zabbix-web-nginx-mysql:
-  hostname: zabbix-web-nginx-mysq_l
+  hostname: zabbix-web-nginx-mysql
   restart: unless-stopped
   image: zabbix/zabbix-web-nginx-mysql:latest
   networks:
