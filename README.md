@@ -4,7 +4,7 @@ Este docker-compose utiliza las siguientes variables:
 
 <note>ZABBIX_HOME: ruta donde se guardan los datos dentro del servidor fisico, ej: /Zabbix-Home </note>
 
-<note>URL_ZABBIX_REPORT: normalmente es la IP la del propio servidor donde se despliega, la misma va en la siguiente notacion: http://<FQDN>o<IP>:10053/report</note>
+<note>URL_ZABBIX_REPORT: normalmente es la IP la del propio servidor donde se despliega, la misma va en la siguiente notacion: http://\<FQDN>o\<IP>:10053/report</note>
 
 <note>IP_AUTH: IPs autorizadas a consultar los reportes de Zabbix</note>
 
