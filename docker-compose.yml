@@ -26,7 +26,7 @@ services:
  zabbix-server-mysql:
   hostname: zabbix-server-mysql
   restart: unless-stopped
-  image: zabbix/zabbix-server-mysql:latest
+  image: zabbix/zabbix-server-mysql:6.4.10
   networks:
    - zbx_net
   ports:
