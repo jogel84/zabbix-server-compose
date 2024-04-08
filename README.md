@@ -13,4 +13,4 @@ Este docker-compose utiliza las siguientes variables:
 | MYSQL_VERSION       | Versión de contenedor de MySQL. Ejemplo: 8.1.0                                                                           |
 | ZABBIX_VERSION      | Versión de contenedor de Zabbix. Ejemplo: 6.4.10-alpine                                                                  |
 
-Se adjunta un archivo de variables (stack.env) para utilizarlo como ejemplo de uso
+Se adjunta un archivo de variables (variables.env) para utilizarlo como ejemplo de uso
