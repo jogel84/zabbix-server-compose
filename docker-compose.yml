@@ -1,111 +1,111 @@
 services:
- mysql-server:
-  hostname: zabbix-mysql
-  restart: unless-stopped
-  image: mysql:${MYSQL_VERSION}
-  cap_add:
-    - SYS_NICE
-  networks:
-   - zbx_net
-  command:
-   - mysqld
-   - --character-set-server=utf8mb4
-   - --collation-server=utf8mb4_bin
-   - --default-authentication-plugin=caching_sha2_password
-  environment:
-   - MYSQL_USER=zabbix
-   - MYSQL_DATABASE=zabbixdb
-   - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-   - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  volumes:
-   - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro 
-   - ${ZABBIX_HOME}/zabbix-mysql:/var/lib/mysql:rw
- 
- zabbix-server-mysql:
-  hostname: zabbix-server-mysql
-  restart: unless-stopped
-  image: zabbix/zabbix-server-mysql:${ZABBIX_VERSION}
-  networks:
-   - zbx_net
-  ports:
-   - 10051:10051
-  volumes:
-   - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro
-   - ${ZABBIX_HOME}/zabbix-data/alertscripts:/usr/lib/zabbix/alertscripts:ro
-   - ${ZABBIX_HOME}/zabbix-data/externalscripts:/usr/lib/zabbix/externalscripts:ro
-   - ${ZABBIX_HOME}/zabbix-data/export:/var/lib/zabbix/export:rw
-   - ${ZABBIX_HOME}/zabbix-data/modules:/var/lib/zabbix/modules:ro
-   - ${ZABBIX_HOME}/zabbix-data/enc:/var/lib/zabbix/enc:ro
-   - ${ZABBIX_HOME}/zabbix-data/ssh_keys:/var/lib/zabbix/ssh_keys:ro
-   - ${ZABBIX_HOME}/zabbix-data/mibs:/var/lib/zabbix/mibs:ro
-   - ${ZABBIX_HOME}/zabbix-data/snmptraps:/var/lib/zabbix/snmptraps:rw
-   - ${ZABBIX_HOME}/zabbix-data/openldap:/etc/openldap:rw
-  environment:
-   - ZBX_ALLOWUNSUPPORTEDDBVERSIONS=1
-   - ZBX_CACHESIZE=256M
-   - ZBX_TRENDCACHESIZE=32M
-   - ZBX_ENABLEREMOTECOMMANDS=1
-   - ZBX_STARTREPORTWRITERS=3
-   - ZBX_WEBSERVICEURL=${URL_ZABBIX_REPORT}
-   - ZBX_PROXYCONFIGFREQUENCY=30
-   - DB_SERVER_HOST=mysql-server
-   - MYSQL_DATABASE=zabbixdb
-   - MYSQL_USER=zabbix
-   - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-   - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  depends_on:
-   - mysql-server
+  mysql-server:
+    hostname: zabbix-mysql
+    restart: unless-stopped
+    image: mysql:${MYSQL_VERSION}
+    cap_add:
+      - SYS_NICE
+    networks:
+    - zbx_net
+    command:
+    - mysqld
+    - --character-set-server=utf8mb4
+    - --collation-server=utf8mb4_bin
+    - --default-authentication-plugin=caching_sha2_password
+    environment:
+    - MYSQL_USER=zabbix
+    - MYSQL_DATABASE=zabbixdb
+    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro 
+    - ${ZABBIX_HOME}/zabbix-mysql:/var/lib/mysql:rw
+  
+  zabbix-server-mysql:
+    hostname: zabbix-server-mysql
+    restart: unless-stopped
+    image: zabbix/zabbix-server-mysql:${ZABBIX_VERSION}
+    networks:
+    - zbx_net
+    ports:
+    - 10051:10051
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro
+    - ${ZABBIX_HOME}/zabbix-data/alertscripts:/usr/lib/zabbix/alertscripts:ro
+    - ${ZABBIX_HOME}/zabbix-data/externalscripts:/usr/lib/zabbix/externalscripts:ro
+    - ${ZABBIX_HOME}/zabbix-data/export:/var/lib/zabbix/export:rw
+    - ${ZABBIX_HOME}/zabbix-data/modules:/var/lib/zabbix/modules:ro
+    - ${ZABBIX_HOME}/zabbix-data/enc:/var/lib/zabbix/enc:ro
+    - ${ZABBIX_HOME}/zabbix-data/ssh_keys:/var/lib/zabbix/ssh_keys:ro
+    - ${ZABBIX_HOME}/zabbix-data/mibs:/var/lib/zabbix/mibs:ro
+    - ${ZABBIX_HOME}/zabbix-data/snmptraps:/var/lib/zabbix/snmptraps:rw
+    - ${ZABBIX_HOME}/zabbix-data/openldap:/etc/openldap:rw
+    environment:
+    - ZBX_ALLOWUNSUPPORTEDDBVERSIONS=1
+    - ZBX_CACHESIZE=256M
+    - ZBX_TRENDCACHESIZE=32M
+    - ZBX_ENABLEREMOTECOMMANDS=1
+    - ZBX_STARTREPORTWRITERS=3
+    - ZBX_WEBSERVICEURL=${URL_ZABBIX_REPORT}
+    - ZBX_PROXYCONFIGFREQUENCY=30
+    - DB_SERVER_HOST=mysql-server
+    - MYSQL_DATABASE=zabbixdb
+    - MYSQL_USER=zabbix
+    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    depends_on:
+    - mysql-server
 
- zabbix-web-nginx-mysql:
-  hostname: zabbix-web-nginx-mysql
-  restart: unless-stopped
-  image: zabbix/zabbix-web-nginx-mysql:${ZABBIX_VERSION}
-  networks:
-   - zbx_net
-  ports:
-   - 8090:8080
-   - 8443:8443
-  volumes:
-   - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro 
-   - ${ZABBIX_HOME}/zabbix-nginx/nginx:/etc/ssl/nginx:ro
-   - ${ZABBIX_HOME}/zabbix-nginx/modules/:/usr/share/zabbix/modules/:ro
-  environment:
-   - ZBX_SERVER_HOST=zabbix-server-mysql
-   - DB_SERVER_HOST=mysql-server
-   - MYSQL_DATABASE=zabbixdb
-   - MYSQL_USER=zabbix
-   - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-   - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-  depends_on:
-   - mysql-server
-   - zabbix-server-mysql
- 
- zabbix-web-service:
-  hostname: zabbix-reports
-  restart: unless-stopped
-  image: zabbix/zabbix-web-service:${ZABBIX_VERSION}
-  networks:
-   - zbx_net
-  ports:
-   - 10053:10053
-  volumes:
-   - /etc/localtime:/etc/localtime:ro
-   - /etc/timezone:/etc/timezone:ro 
-  environment:
-   - ZBX_ALLOWEDIP=zabbix-server-mysql,zabbix-web-nginx-mysql,${IP_AUTH}
-   - ZBX_LISTENPORT=10053
-   - ZBX_TIMEOUT=3
-   - ZBX_TLSACCEPT=unencrypted
-   - ZBX_IGNOREURLCERTERRORS=1
-  cap_add:
-   - SYS_ADMIN
-  depends_on:
-   - zabbix-server-mysql
-   - zabbix-web-nginx-mysql
+  zabbix-web-nginx-mysql:
+    hostname: zabbix-web-nginx-mysql
+    restart: unless-stopped
+    image: zabbix/zabbix-web-nginx-mysql:${ZABBIX_VERSION}
+    networks:
+    - zbx_net
+    ports:
+    - 8090:8080
+    - 8443:8443
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro 
+    - ${ZABBIX_HOME}/zabbix-nginx/nginx:/etc/ssl/nginx:ro
+    - ${ZABBIX_HOME}/zabbix-nginx/modules/:/usr/share/zabbix/modules/:ro
+    environment:
+    - ZBX_SERVER_HOST=zabbix-server-mysql
+    - DB_SERVER_HOST=mysql-server
+    - MYSQL_DATABASE=zabbixdb
+    - MYSQL_USER=zabbix
+    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    depends_on:
+    - mysql-server
+    - zabbix-server-mysql
+  
+  zabbix-web-service:
+    hostname: zabbix-reports
+    restart: unless-stopped
+    image: zabbix/zabbix-web-service:${ZABBIX_VERSION}
+    networks:
+    - zbx_net
+    ports:
+    - 10053:10053
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /etc/timezone:/etc/timezone:ro 
+    environment:
+    - ZBX_ALLOWEDIP=zabbix-server-mysql,zabbix-web-nginx-mysql,${IP_AUTH}
+    - ZBX_LISTENPORT=10053
+    - ZBX_TIMEOUT=3
+    - ZBX_TLSACCEPT=unencrypted
+    - ZBX_IGNOREURLCERTERRORS=1
+    cap_add:
+    - SYS_ADMIN
+    depends_on:
+    - zabbix-server-mysql
+    - zabbix-web-nginx-mysql
 
-networks:
- zbx_net:
-   driver: bridge
+  networks:
+  zbx_net:
+    driver: bridge
